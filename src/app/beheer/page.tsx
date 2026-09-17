@@ -23,6 +23,13 @@ export default async function AdminPage() {
               Pas producten, foto's, prijzen en voorraad aan.
             </p>
           </div>
+
+          <a
+            href="/beheer/producten/nieuw"
+            className="rounded-full bg-[var(--brand-dark)] px-5 py-3 text-sm text-white"
+          >
+            + Nieuw product
+          </a>
         </div>
 
         <AdminProductList products={products} />

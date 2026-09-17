@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { StockRow } from "./stock-row";
 import { PhotoManager } from "./photo-manager";
+import { ProductFields } from "./product-fields";
 
 type Variant = {
   id: string;
@@ -16,6 +17,8 @@ type Variant = {
 type Product = {
   id: string;
   name: string;
+  description: string | null;
+  category: string;
   price: number;
   active: boolean;
   image_url: string | null;
@@ -28,6 +31,9 @@ type Product = {
 
 export function ProductEditor({ product }: { product: Product }) {
   const router = useRouter();
+  const [name, setName] = useState(product.name);
+  const [description, setDescription] = useState(product.description ?? "");
+  const [category, setCategory] = useState(product.category);
   const [price, setPrice] = useState(product.price.toFixed(2));
   const [active, setActive] = useState(product.active);
   const [variants, setVariants] = useState(product.product_variants);
@@ -50,6 +56,9 @@ export function ProductEditor({ product }: { product: Product }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        name,
+        description,
+        category,
         price: Number(price.replace(",", ".")),
         active,
         variants: variants.map(({ id, stock }) => ({ id, stock })),
@@ -58,59 +67,36 @@ export function ProductEditor({ product }: { product: Product }) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      setMessage(data.error ?? "Opslaan mislukt.");
-      setSaving(false);
-      return;
-    }
+    setMessage(
+      response.ok
+        ? "Wijzigingen opgeslagen."
+        : data.error ?? "Opslaan mislukt."
+    );
 
-    setMessage("Wijzigingen opgeslagen.");
     setSaving(false);
-    router.refresh();
+
+    if (response.ok) {
+      router.refresh();
+    }
   }
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[2rem] bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">Product</h2>
-
-        <label className="mt-6 block text-sm font-medium">
-          Verkoopprijs
-        </label>
-
-        <div className="mt-2 flex max-w-xs items-center rounded-xl border border-[var(--brand-border)] bg-white px-4">
-          <span>€</span>
-          <input
-            value={price}
-            onChange={(event) => setPrice(event.target.value)}
-            inputMode="decimal"
-            className="w-full bg-transparent px-3 py-3 outline-none"
-          />
-        </div>
-
-        <label className="mt-6 flex cursor-pointer items-center justify-between rounded-xl bg-[#f8eee8] p-4">
-          <div>
-            <p className="font-medium">Product zichtbaar</p>
-            <p className="text-xs text-[var(--brand-muted)]">
-              Zet uit om het product tijdelijk uit de webshop te halen.
-            </p>
-          </div>
-
-          <input
-            type="checkbox"
-            checked={active}
-            onChange={(event) => setActive(event.target.checked)}
-            className="size-5"
-          />
-        </label>
-      </section>
+      <ProductFields
+        name={name}
+        description={description}
+        category={category}
+        price={price}
+        active={active}
+        onName={setName}
+        onDescription={setDescription}
+        onCategory={setCategory}
+        onPrice={setPrice}
+        onActive={setActive}
+      />
 
       <section className="rounded-[2rem] bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold">Voorraad</h2>
-
-        <p className="mt-1 text-sm text-[var(--brand-muted)]">
-          Pas de voorraad per maat aan.
-        </p>
 
         <div className="mt-4">
           {variants.map((variant) => (
@@ -132,9 +118,7 @@ export function ProductEditor({ product }: { product: Product }) {
       />
 
       {message && (
-        <p className="text-sm text-[var(--brand-muted)]">
-          {message}
-        </p>
+        <p className="text-sm text-[var(--brand-muted)]">{message}</p>
       )}
 
       <button

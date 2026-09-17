@@ -4,6 +4,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const schema = z.object({
+  name: z.string().trim().min(2).max(200),
+  description: z.string().trim().max(5000),
+  category: z.string().trim().min(2).max(100),
   price: z.number().positive().max(10000),
   active: z.boolean(),
   variants: z.array(
@@ -48,6 +51,9 @@ export async function PATCH(request: Request, { params }: Props) {
     const { error: productError } = await admin
       .from("products")
       .update({
+        name: body.name,
+        description: body.description || null,
+        category: body.category,
         price: body.price,
         active: body.active,
       })

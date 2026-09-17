@@ -9,6 +9,8 @@ export async function getAdminProduct(id: string) {
       id,
       name,
       slug,
+      description,
+      category,
       price,
       active,
       image_url,
