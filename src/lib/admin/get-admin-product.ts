@@ -18,9 +18,20 @@ export async function getAdminProduct(id: string) {
         size,
         stock,
         sku
+      ),
+      product_images (
+        id,
+        image_url,
+        alt_text,
+        sort_order,
+        storage_path
       )
     `)
     .eq("id", id)
+    .order("sort_order", {
+      referencedTable: "product_images",
+      ascending: true
+    })
     .maybeSingle();
 
   if (error) {

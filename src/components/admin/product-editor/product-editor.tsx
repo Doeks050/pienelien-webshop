@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { StockRow } from "./stock-row";
+import { PhotoManager } from "./photo-manager";
 
 type Variant = {
   id: string;
@@ -17,7 +18,12 @@ type Product = {
   name: string;
   price: number;
   active: boolean;
+  image_url: string | null;
   product_variants: Variant[];
+  product_images: {
+    id: string;
+    image_url: string;
+  }[];
 };
 
 export function ProductEditor({ product }: { product: Product }) {
@@ -118,6 +124,12 @@ export function ProductEditor({ product }: { product: Product }) {
           ))}
         </div>
       </section>
+
+      <PhotoManager
+        productId={product.id}
+        mainImage={product.image_url}
+        photos={product.product_images}
+      />
 
       {message && (
         <p className="text-sm text-[var(--brand-muted)]">
