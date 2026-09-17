@@ -1,3 +1,4 @@
+import type { Customer } from "@/types/customer";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type ValidatedItem = {
@@ -11,7 +12,15 @@ type ValidatedItem = {
   quantity: number;
 };
 
-export async function createOrder(items: ValidatedItem[]) {
+type CreateOrderInput = {
+  items: ValidatedItem[];
+  customer: Customer;
+};
+
+export async function createOrder({
+  items,
+  customer,
+}: CreateOrderInput) {
   const supabase = createSupabaseAdminClient();
 
   const subtotal = items.reduce(
@@ -25,6 +34,13 @@ export async function createOrder(items: ValidatedItem[]) {
   const { data: order, error } = await supabase
     .from("orders")
     .insert({
+      first_name: customer.firstName,
+      last_name: customer.lastName,
+      email: customer.email,
+      street: customer.street,
+      house_number: customer.houseNumber,
+      postal_code: customer.postalCode,
+      city: customer.city,
       subtotal,
       shipping,
       total,

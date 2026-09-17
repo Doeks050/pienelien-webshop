@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/cart-context";
 
 export function CheckoutForm() {
   const { items, clearCart } = useCart();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,23 +42,16 @@ export function CheckoutForm() {
       }
 
       clearCart();
-      setDone(true);
+      router.push(`/bestelling/${data.orderId}`);
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Er ging iets mis.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Er ging iets mis."
+      );
     } finally {
       setLoading(false);
     }
-  }
-
-  if (done) {
-    return (
-      <div className="rounded-[2rem] bg-[#f8eee8] p-8 text-center">
-        <h1 className="text-3xl font-semibold">Bestelling ontvangen</h1>
-        <p className="mt-3 text-[var(--brand-muted)]">
-          Je bestelling is opgeslagen. Betaling koppelen we later via Mollie.
-        </p>
-      </div>
-    );
   }
 
   return (
