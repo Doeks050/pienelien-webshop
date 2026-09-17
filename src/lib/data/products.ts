@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mapProduct, mapVariant } from "./product-mappers";
+import { mapProductImage } from "./product-image-mapper";
 
 export async function getProducts() {
   const supabase = await createSupabaseServerClient();
@@ -11,7 +12,7 @@ export async function getProducts() {
     .order("created_at");
 
   if (error) {
-    throw new Error(`Products ophalen mislukt: ${error.message}`);
+    throw new Error(error.message);
   }
 
   return data.map(mapProduct);
@@ -28,10 +29,25 @@ export async function getProductBySlug(slug: string) {
     .maybeSingle();
 
   if (error) {
-    throw new Error(`Product ophalen mislukt: ${error.message}`);
+    throw new Error(error.message);
   }
 
-  return data ? mapProduct(data) : null;
+  if (!data) return null;
+
+  const { data: images, error: imageError } = await supabase
+    .from("product_images")
+    .select("*")
+    .eq("product_id", data.id)
+    .order("sort_order");
+
+  if (imageError) {
+    throw new Error(imageError.message);
+  }
+
+  return {
+    ...mapProduct(data),
+    images: (images ?? []).map(mapProductImage),
+  };
 }
 
 export async function getVariants(productId: string) {
@@ -45,7 +61,7 @@ export async function getVariants(productId: string) {
     .order("size");
 
   if (error) {
-    throw new Error(`Varianten ophalen mislukt: ${error.message}`);
+    throw new Error(error.message);
   }
 
   return data.map(mapVariant);

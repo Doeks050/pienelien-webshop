@@ -1,3 +1,5 @@
+import type { ProductImage } from "./product-image";
+
 export type Product = {
   id: string;
   name: string;
@@ -7,4 +9,5 @@ export type Product = {
   category: string;
   badge?: string;
   image?: string;
+  images?: ProductImage[];
 };

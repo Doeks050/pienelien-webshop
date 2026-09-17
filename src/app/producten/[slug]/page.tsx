@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <main className="py-10 sm:py-16">
       <Container className="grid gap-12 lg:grid-cols-2">
-        <ProductGallery name={product.name} image={product.image} />
+        <ProductGallery name={product.name} image={product.image} images={product.images} />
         <ProductInfo product={product} variants={variants} />
       </Container>
     </main>
