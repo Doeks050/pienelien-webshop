@@ -1,9 +1,16 @@
 import type { Product } from "@/types/product";
+import type { ProductVariant } from "@/types/product-variant";
 import { formatEuro } from "@/lib/currency";
-import { productColors } from "@/data/product-options";
 import { PurchasePanel } from "./purchase-panel";
 
-export function ProductInfo({ product }: { product: Product }) {
+type Props = {
+  product: Product;
+  variants: ProductVariant[];
+};
+
+export function ProductInfo({ product, variants }: Props) {
+  const color = variants[0]?.color ?? "";
+
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-accent)]">
@@ -23,14 +30,16 @@ export function ProductInfo({ product }: { product: Product }) {
         ontdekken.
       </p>
 
-      <div className="mt-8">
-        <p className="text-sm font-medium">Kleur</p>
-        <p className="mt-2 text-sm text-[var(--brand-muted)]">
-          {productColors[product.slug]}
-        </p>
-      </div>
+      {color && (
+        <div className="mt-8">
+          <p className="text-sm font-medium">Kleur</p>
+          <p className="mt-2 text-sm text-[var(--brand-muted)]">
+            {color}
+          </p>
+        </div>
+      )}
 
-      <PurchasePanel product={product} />
+      <PurchasePanel product={product} variants={variants} />
 
       <p className="mt-4 text-center text-xs text-[var(--brand-muted)]">
         Veilig betalen met iDEAL

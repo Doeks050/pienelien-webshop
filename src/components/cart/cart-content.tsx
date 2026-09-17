@@ -25,10 +25,7 @@ export function CartContent() {
 
         <div className="mt-6">
           {items.map((item) => (
-            <CartRow
-              key={`${item.productId}-${item.size}`}
-              item={item}
-            />
+            <CartRow key={item.variantId} item={item} />
           ))}
         </div>
       </div>

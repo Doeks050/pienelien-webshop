@@ -21,7 +21,11 @@ export function CartRow({ item }: { item: CartItem }) {
           </Link>
 
           <p className="mt-1 text-sm text-[var(--brand-muted)]">
-            Maat: {item.size}
+            {item.color} · {item.size}
+          </p>
+
+          <p className="mt-1 text-xs text-[var(--brand-muted)]">
+            SKU: {item.sku}
           </p>
 
           <button

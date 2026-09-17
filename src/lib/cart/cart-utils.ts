@@ -1,7 +1,7 @@
 import type { CartItem } from "@/types/cart";
 
 export function cartItemKey(item: CartItem) {
-  return `${item.productId}-${item.size}`;
+  return item.variantId;
 }
 
 export function cartTotal(items: CartItem[]) {
