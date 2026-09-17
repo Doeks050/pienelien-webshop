@@ -1,16 +1,9 @@
 import type { Product } from "@/types/product";
 import { formatEuro } from "@/lib/currency";
 import { productColors } from "@/data/product-options";
-import { AddToCartButton } from "./add-to-cart-button";
-import { SizeSelector } from "./size-selector";
+import { PurchasePanel } from "./purchase-panel";
 
-type ProductInfoProps = {
-  product: Product;
-};
-
-export function ProductInfo({ product }: ProductInfoProps) {
-  const color = productColors[product.slug];
-
+export function ProductInfo({ product }: { product: Product }) {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brand-accent)]">
@@ -27,23 +20,17 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       <p className="mt-6 leading-7 text-[var(--brand-muted)]">
         Zachte babysokjes met antislip grip voor kleine voetjes die volop
-        ontdekken. Comfortabel voor thuis en ideaal bij de eerste stapjes.
+        ontdekken.
       </p>
 
       <div className="mt-8">
         <p className="text-sm font-medium">Kleur</p>
         <p className="mt-2 text-sm text-[var(--brand-muted)]">
-          {color}
+          {productColors[product.slug]}
         </p>
       </div>
 
-      <div className="mt-8">
-        <SizeSelector />
-      </div>
-
-      <div className="mt-8">
-        <AddToCartButton />
-      </div>
+      <PurchasePanel product={product} />
 
       <p className="mt-4 text-center text-xs text-[var(--brand-muted)]">
         Veilig betalen met iDEAL
