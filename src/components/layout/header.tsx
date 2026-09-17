@@ -3,9 +3,9 @@ import { HeaderActions } from "./header-actions";
 import { Logo } from "./logo";
 
 const links = [
-  ["Shop", "#shop"],
-  ["Nieuw", "#nieuw"],
-  ["Over Pienelien", "#over"],
+  ["Shop", "/shop"],
+  ["Nieuw", "/shop"],
+  ["Over Pienelien", "/#over"],
 ];
 
 export function Header() {
