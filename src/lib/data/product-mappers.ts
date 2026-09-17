@@ -9,6 +9,7 @@ export function mapProduct(row: Record<string, unknown>): Product {
     price: Number(row.price),
     category: String(row.category),
     badge: row.badge ? String(row.badge) : undefined,
+    image: row.image_url ? String(row.image_url) : undefined,
   };
 }
 
