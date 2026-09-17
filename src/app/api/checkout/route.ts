@@ -1,29 +1,13 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { validateCart } from "@/lib/checkout/validate-cart";
 import { createOrder } from "@/lib/checkout/create-order";
-import type { CartItem } from "@/types/cart";
-import type { Customer } from "@/types/customer";
+import { parseCheckout } from "@/lib/validation/checkout";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
-    const items = body.items as CartItem[];
-    const customer = body.customer as Customer;
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: "Winkelmand is leeg." },
-        { status: 400 }
-      );
-    }
-
-    if (!customer?.email || !customer?.firstName) {
-      return NextResponse.json(
-        { error: "Klantgegevens ontbreken." },
-        { status: 400 }
-      );
-    }
+    const { items, customer } = parseCheckout(body);
 
     const validated = await validateCart(items);
 
@@ -37,8 +21,20 @@ export async function POST(request: Request) {
       total: order.total,
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      const message =
+        error.issues[0]?.message ?? "Controleer je gegevens.";
+
+      return NextResponse.json(
+        { error: message },
+        { status: 400 }
+      );
+    }
+
     const message =
-      error instanceof Error ? error.message : "Checkout mislukt.";
+      error instanceof Error
+        ? error.message
+        : "Checkout mislukt.";
 
     return NextResponse.json(
       { error: message },
