@@ -25,7 +25,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem("pienelien-cart");
-    if (stored) dispatch({ type: "load", items: JSON.parse(stored) });
+
+    if (stored) {
+      const parsed = JSON.parse(stored) as CartItem[];
+
+      const valid = parsed.filter(
+        (item) =>
+          item.variantId &&
+          typeof item.stock === "number"
+      );
+
+      dispatch({ type: "load", items: valid });
+    }
   }, []);
 
   useEffect(() => {

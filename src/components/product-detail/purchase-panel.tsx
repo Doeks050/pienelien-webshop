@@ -28,6 +28,7 @@ export function PurchasePanel({ product, variants }: Props) {
       price: product.price,
       color: selected.color,
       size: selected.size,
+      stock: selected.stock,
       quantity: 1,
     });
   }
@@ -64,8 +65,16 @@ export function PurchasePanel({ product, variants }: Props) {
       </div>
 
       {selected && (
-        <p className="text-xs text-[var(--brand-muted)]">
-          {selected.color} · {selected.stock} op voorraad
+        <p
+          className={
+            selected.stock <= 5
+              ? "text-xs font-medium text-[#9b4b3f]"
+              : "text-xs text-[var(--brand-muted)]"
+          }
+        >
+          {selected.stock <= 5
+            ? `Nog maar ${selected.stock} op voorraad`
+            : `${selected.color} · ${selected.stock} op voorraad`}
         </p>
       )}
 

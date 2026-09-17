@@ -20,21 +20,44 @@ export function cartReducer(
   }
 
   if (action.type === "quantity") {
-    return state.map((item) =>
-      cartItemKey(item) === action.key
-        ? { ...item, quantity: Math.max(1, action.quantity) }
-        : item
-    );
+    return state.map((item) => {
+      if (cartItemKey(item) !== action.key) return item;
+
+      const stock = item.stock ?? 1;
+
+      return {
+        ...item,
+        quantity: Math.min(
+          Math.max(1, action.quantity),
+          stock
+        ),
+      };
+    });
   }
 
   const key = cartItemKey(action.item);
   const existing = state.find((item) => cartItemKey(item) === key);
 
-  if (!existing) return [...state, action.item];
+  if (!existing) {
+    return [
+      ...state,
+      {
+        ...action.item,
+        quantity: Math.min(action.item.quantity, action.item.stock),
+      },
+    ];
+  }
 
   return state.map((item) =>
     cartItemKey(item) === key
-      ? { ...item, quantity: item.quantity + action.item.quantity }
+      ? {
+          ...item,
+          stock: action.item.stock,
+          quantity: Math.min(
+            item.quantity + action.item.quantity,
+            action.item.stock
+          ),
+        }
       : item
   );
 }

@@ -5,14 +5,15 @@ import type { CartItem } from "@/types/cart";
 import { formatEuro } from "@/lib/currency";
 import { cartItemKey } from "@/lib/cart/cart-utils";
 import { useCart } from "@/context/cart-context";
+import { QuantityControl } from "./quantity-control";
 
 export function CartRow({ item }: { item: CartItem }) {
-  const { removeItem, setQuantity } = useCart();
+  const { removeItem } = useCart();
   const key = cartItemKey(item);
 
   return (
     <div className="flex gap-4 border-b border-[var(--brand-border)] py-5">
-      <div className="size-24 rounded-2xl bg-[#f3ebe6]" />
+      <div className="size-24 shrink-0 rounded-2xl bg-[#f3ebe6]" />
 
       <div className="flex flex-1 justify-between gap-4">
         <div>
@@ -25,7 +26,7 @@ export function CartRow({ item }: { item: CartItem }) {
           </p>
 
           <p className="mt-1 text-xs text-[var(--brand-muted)]">
-            SKU: {item.sku}
+            Nog {item.stock} op voorraad
           </p>
 
           <button
@@ -39,16 +40,7 @@ export function CartRow({ item }: { item: CartItem }) {
 
         <div className="text-right">
           <p>{formatEuro(item.price * item.quantity)}</p>
-
-          <input
-            type="number"
-            min="1"
-            value={item.quantity}
-            onChange={(event) =>
-              setQuantity(key, Number(event.target.value))
-            }
-            className="mt-3 w-16 rounded-lg border p-2 text-center"
-          />
+          <QuantityControl item={item} />
         </div>
       </div>
     </div>

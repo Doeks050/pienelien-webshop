@@ -9,6 +9,7 @@ export const cartItemSchema = z.object({
   price: z.number().nonnegative(),
   color: z.string().trim().min(1).max(80),
   size: z.string().trim().min(1).max(80),
+  stock: z.number().int().nonnegative(),
   quantity: z.number().int().min(1).max(20),
 });
 
