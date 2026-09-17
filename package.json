@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "product:image": "node --env-file=.env.local scripts/upload-product-image.mjs"
+    "product:image": "node --env-file=.env.local scripts/upload-product-image.mjs",
+    "admin:create": "node --env-file=.env.local scripts/create-admin.mjs"
   },
   "dependencies": {
     "@mollie/api-client": "^4.6.0",
